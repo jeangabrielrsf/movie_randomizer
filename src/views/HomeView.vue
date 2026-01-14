@@ -5,8 +5,7 @@
     <div v-if="!store.isAuthorized" class="text-center w-100 px-4" style="max-width: 900px;">
 
       <div class="mb-12">
-        <img src="@/assets/logo.svg" alt="Movie Randomizer" height="120" width="120"
-          class="mb-6 elevation-10 rounded-circle bg-deep-purple-darken-3" />
+        <v-icon icon="mdi-movie-open-star" size="80" class="text-grad mb-6" />
         <h1 class="text-h5 text-sm-h4 text-md-h2 text-lg-h1 font-weight-bold mb-4 text-white">
           Chega de Escolher.<br>
           <span class="text-grad">É Hora de Assistir.</span>
@@ -38,7 +37,7 @@
         Entrar com Google
       </v-btn>
       <v-alert v-if="store.error" type="error" class="mt-8 mx-auto" style="max-width: 400px;" closable>{{ store.error
-        }}</v-alert>
+      }}</v-alert>
     </div>
 
     <!-- Main App State -->
@@ -49,7 +48,7 @@
         <FolderPicker @select="handleFileSelect" />
         <!-- Show error if any -->
         <v-alert v-if="store.error" type="error" class="mt-4" closable @click:close="store.error = null">{{ store.error
-          }}</v-alert>
+        }}</v-alert>
       </div>
 
       <!-- App Content (only if file selected) -->

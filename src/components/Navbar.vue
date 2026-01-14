@@ -2,7 +2,7 @@
     <v-app-bar flat color="transparent" class="px-4 mt-2" scroll-behavior="hide" :elevation="0">
         <!-- Clickable Logo Area -->
         <div class="d-flex align-center cursor-pointer" @click="goHome">
-            <img src="@/assets/logo.svg" alt="Movie Randomizer" height="32" width="32" class="me-2" />
+            <v-icon icon="mdi-movie-open-star" color="primary" class="me-2" size="32"></v-icon>
             <span class="text-h6 font-weight-bold text-white d-none d-sm-block">Movie Randomizer</span>
         </div>
 
