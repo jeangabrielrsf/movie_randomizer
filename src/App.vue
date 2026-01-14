@@ -1,4 +1,5 @@
 <template>
+  <SpeedInsights />
   <v-app>
     <Navbar />
     <v-main class="d-flex align-center justify-center fill-height bg-deep-purple-darken-4">
@@ -10,6 +11,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useAppStore } from './stores/appStore';
+import { SpeedInsights } from "@vercel/speed-insights/vue"
 import Navbar from './components/Navbar.vue';
 
 const store = useAppStore();
