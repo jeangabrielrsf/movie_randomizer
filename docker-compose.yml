@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
+        - VITE_GOOGLE_API_KEY=${VITE_GOOGLE_API_KEY}
+        - VITE_TMDB_API_KEY=${VITE_TMDB_API_KEY}
+    ports:
+      - "8080:80"
+    restart: always
+    environment:
+      - NODE_ENV=production
