@@ -5,6 +5,7 @@
     <v-main class="d-flex align-center justify-center bg-deep-purple-darken-4" style="min-height: 100dvh;">
       <router-view />
     </v-main>
+    <Footer />
   </v-app>
 </template>
 
@@ -13,6 +14,7 @@ import { onMounted } from 'vue';
 import { useAppStore } from './stores/appStore';
 import { SpeedInsights } from "@vercel/speed-insights/vue"
 import Navbar from './components/Navbar.vue';
+import Footer from './components/Footer.vue';
 
 const store = useAppStore();
 
