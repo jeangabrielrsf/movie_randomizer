@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar flat color="transparent" class="px-4 mt-2">
+    <v-app-bar flat color="transparent" class="px-4 mt-2" scroll-behavior="hide" :elevation="0">
         <!-- Clickable Logo Area -->
         <div class="d-flex align-center cursor-pointer" @click="goHome">
             <v-icon icon="mdi-movie-open-star" color="primary" class="me-2" size="32"></v-icon>

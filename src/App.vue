@@ -2,7 +2,7 @@
   <SpeedInsights />
   <v-app>
     <Navbar />
-    <v-main class="d-flex align-center justify-center fill-height bg-deep-purple-darken-4">
+    <v-main class="d-flex align-center justify-center bg-deep-purple-darken-4" style="min-height: 100dvh;">
       <router-view />
     </v-main>
   </v-app>
@@ -30,5 +30,10 @@ onMounted(() => {
 /* Background gradient */
 .bg-deep-purple-darken-4 {
   background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%) !important;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
 </style>

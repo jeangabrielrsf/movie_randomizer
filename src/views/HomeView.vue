@@ -6,12 +6,12 @@
 
       <div class="mb-12">
         <v-icon icon="mdi-movie-open-star" size="80" class="text-grad mb-6" />
-        <h1 class="text-h2 text-md-h1 font-weight-bold mb-4 text-white">
+        <h1 class="text-h5 text-sm-h4 text-md-h2 text-lg-h1 font-weight-bold mb-4 text-white">
           Chega de Escolher.<br>
           <span class="text-grad">É Hora de Assistir.</span>
         </h1>
 
-        <h2 class="text-h5 text-md-h4 font-weight-light text-grey-lighten-1 mb-6">
+        <h2 class="text-subtitle-1 text-sm-h5 text-md-h4 font-weight-light text-grey-lighten-1 mb-6">
           Você gasta mais tempo navegando no catálogo do que assistindo? <br class="d-none d-md-block">
           O <strong>Movie Randomizer</strong> foi criado para eliminar a indecisão.
         </h2>
@@ -22,8 +22,12 @@
         </p>
 
         <div class="mt-6">
-          <v-btn to="/faq" variant="text" color="blue-lighten-2" prepend-icon="mdi-help-circle-outline">
-            Novo por aqui? Leia as Dúvidas e saiba como começar
+          <v-btn to="/faq" variant="text" color="blue-lighten-2" prepend-icon="mdi-help-circle-outline"
+            class="px-4 py-2 d-flex align-center" height="auto">
+            <span class="text-wrap text-center text-caption text-sm-body-1"
+              style="white-space: normal !important; display: block;">
+              Novo por aqui? Leia as Dúvidas e saiba como começar
+            </span>
           </v-btn>
         </div>
       </div>
@@ -33,7 +37,7 @@
         Entrar com Google
       </v-btn>
       <v-alert v-if="store.error" type="error" class="mt-8 mx-auto" style="max-width: 400px;" closable>{{ store.error
-        }}</v-alert>
+      }}</v-alert>
     </div>
 
     <!-- Main App State -->
@@ -44,7 +48,7 @@
         <FolderPicker @select="handleFileSelect" />
         <!-- Show error if any -->
         <v-alert v-if="store.error" type="error" class="mt-4" closable @click:close="store.error = null">{{ store.error
-          }}</v-alert>
+        }}</v-alert>
       </div>
 
       <!-- App Content (only if file selected) -->
@@ -93,9 +97,10 @@
               </div>
             </div>
 
-            <v-btn color="secondary" size="x-large" class="random-btn my-8" height="100" width="300" rounded="pill"
-              elevation="12" @click="startRandomize" :disabled="store.unwatchedList.length === 0">
-              <span class="text-h4">Randomizar</span>
+            <v-btn color="secondary" size="x-large" class="random-btn my-8" :height="$vuetify.display.xs ? 80 : 100"
+              :width="$vuetify.display.xs ? 240 : 300" rounded="pill" elevation="12" @click="startRandomize"
+              :disabled="store.unwatchedList.length === 0">
+              <span class="text-h5 text-sm-h4">Randomizar</span>
             </v-btn>
 
             <div class="d-flex justify-center">
