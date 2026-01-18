@@ -30,14 +30,64 @@ export const useAppStore = defineStore('app', {
         async initializeFunctions() {
             try {
                 await driveService.initClient();
+                // Attempt to restore session
+                if (driveService.restoreSession()) {
+                    console.log("Session restored from storage");
+                    this.isAuthorized = true;
+                    // Restore state logic that usually happens in login
+                    const storedFolder = localStorage.getItem('movie_randomizer_folder_id');
+                    const storedFile = localStorage.getItem('movie_randomizer_file_id');
+                    if (storedFolder) {
+                        this.folderId = storedFolder;
+                        if (storedFile) {
+                            this.fileId = storedFile;
+                            this.currentFileName = localStorage.getItem('movie_randomizer_file_name');
+                            this.fileMimeType = localStorage.getItem('movie_randomizer_file_mime');
+                            // Load file content in background
+                            this.loadFile();
+                        }
+                    }
+                }
             } catch (err) {
                 console.error("Init Error", err);
             }
         },
 
+        async mockLogin() {
+            console.log("Mock Mode Activated");
+            this.isLoading = true;
+            this.isAuthorized = true;
+
+            // Mock dummy folder and file
+            this.folderId = 'mock-folder-id';
+            this.fileId = 'mock-file-id';
+            this.fileMimeType = 'application/vnd.google-apps.document';
+            this.currentFileName = 'Lista Mockada';
+
+            // Initial mock content
+            const mockContent = `
+Inception
+The Matrix (1999) [FILME]
+Breaking Bad [SÉRIE]
+Interstellar
+            `;
+            this.fileContent = mockContent.trim();
+            this.parseContent(this.fileContent);
+
+            this.isLoading = false;
+        },
+
         async login() {
             try {
                 this.isLoading = true;
+
+                // Check if we are in mock mode from URL query param
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('mock') === 'true') {
+                    await this.mockLogin();
+                    return;
+                }
+
                 if (!driveService.gisInited) await driveService.initClient();
 
                 await driveService.handleAuthClick();
@@ -149,6 +199,20 @@ export const useAppStore = defineStore('app', {
                 let line = title;
                 if (year) line += ` (${year})`;
                 line += ` [${type}]`;
+
+                if (this.fileId === 'mock-file-id') {
+                    // Mock add
+                    console.log("Mock Adding Item:", line);
+                    // Append to local list
+                    const newLine = {
+                        originalLine: line,
+                        title: title,
+                        cleanedLine: line,
+                        watched: false
+                    };
+                    this.parsedList.push(newLine);
+                    return;
+                }
 
                 await driveService.appendToFile(this.fileId, this.fileMimeType, line);
 
@@ -377,6 +441,7 @@ export const useAppStore = defineStore('app', {
             localStorage.removeItem('movie_randomizer_file_id');
             localStorage.removeItem('movie_randomizer_file_name');
             localStorage.removeItem('movie_randomizer_file_mime');
+            localStorage.removeItem('gdrive_session');
         }
     }
 });

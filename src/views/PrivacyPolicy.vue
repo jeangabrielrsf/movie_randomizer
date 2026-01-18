@@ -12,7 +12,7 @@
                 <p class="text-body-2 text-grey-lighten-4">
                     O <strong>Movie Randomizer</strong> ("nós", "nosso") respeita a sua privacidade. Esta Política de
                     Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações quando você usa
-                    nosso aplicatvo.
+                    nosso aplicativo.
                 </p>
             </section>
 

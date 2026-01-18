@@ -14,6 +14,39 @@ let gisInited = false;
 export const driveService = {
     isAuthorized: false,
 
+    saveSession(tokenResponse) {
+        if (!tokenResponse || !tokenResponse.access_token) return;
+        const expiresIn = tokenResponse.expires_in || 3599; // Default 1h
+        const expiry = Date.now() + (expiresIn * 1000);
+        const session = {
+            ...tokenResponse,
+            expiry_timestamp: expiry
+        };
+        localStorage.setItem('gdrive_session', JSON.stringify(session));
+    },
+
+    restoreSession() {
+        const stored = localStorage.getItem('gdrive_session');
+        if (!stored) return false;
+
+        try {
+            const session = JSON.parse(stored);
+            if (Date.now() > session.expiry_timestamp) {
+                console.log("Session expired");
+                localStorage.removeItem('gdrive_session');
+                return false;
+            }
+
+            gapi.client.setToken(session);
+            this.isAuthorized = true;
+            return true;
+        } catch (e) {
+            console.error("Failed to restore session", e);
+            localStorage.removeItem('gdrive_session');
+            return false;
+        }
+    },
+
     loadGapiInside() {
         return new Promise((resolve) => {
             // Check if gapi is already loaded
@@ -66,6 +99,11 @@ export const driveService = {
                             if (resp.error !== undefined) {
                                 throw (resp);
                             }
+                            const token = gapi.client.getToken();
+                            if (!token) {
+                                gapi.client.setToken(resp);
+                            }
+                            this.saveSession(resp);
                             this.isAuthorized = true;
                         },
                     });
@@ -91,6 +129,8 @@ export const driveService = {
                 if (resp.error) {
                     reject(resp);
                 } else {
+                    gapi.client.setToken(resp);
+                    this.saveSession(resp);
                     this.isAuthorized = true;
                     resolve(resp);
                 }

@@ -4,8 +4,9 @@
             Voltar
         </v-btn>
 
-        <h1 class="text-h3 font-weight-bold text-white mb-2">Central de Dúvidas</h1>
-        <p class="text-h6 text-grey-lighten-1 mb-12">Tudo que você precisa saber para começar a usar o Movie Randomizer.
+        <h1 class="text-h4 text-sm-h3 font-weight-bold text-white mb-2">Central de Dúvidas</h1>
+        <p class="text-subtitle-1 text-sm-h6 text-grey-lighten-1 mb-12">Tudo que você precisa saber para começar a usar
+            o Movie Randomizer.
         </p>
 
         <v-expansion-panels variant="popout" class="mb-12">

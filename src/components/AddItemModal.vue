@@ -20,13 +20,19 @@
                                     <v-avatar class="ma-3" size="100" rounded="0">
                                         <v-img :src="getImage(item.poster_path)" cover></v-img>
                                     </v-avatar>
-                                    <div>
-                                        <v-card-title class="text-subtitle-1 text-wrap pt-3">
-                                            {{ item.title || item.name }}
-                                        </v-card-title>
-                                        <v-card-subtitle>
-                                            {{ getYear(item) }} • {{ getType(item) }}
-                                        </v-card-subtitle>
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <div class="d-flex justify-space-between align-start">
+                                            <div>
+                                                <v-card-title class="text-subtitle-1 text-wrap pt-3">
+                                                    {{ item.title || item.name }}
+                                                </v-card-title>
+                                                <v-card-subtitle>
+                                                    {{ getYear(item) }} • {{ getType(item) }}
+                                                </v-card-subtitle>
+                                            </div>
+                                            <v-btn icon="mdi-plus" variant="text" color="primary" class="ma-2"
+                                                @click.stop="quickAdd(item)" :loading="isItemAdding(item.id)"></v-btn>
+                                        </div>
                                         <v-card-text class="text-caption text-grey py-1 line-clamp-3">
                                             {{ item.overview }}
                                         </v-card-text>
@@ -53,7 +59,8 @@
             <v-card v-if="selectedItem" class="bg-black">
                 <v-toolbar color="transparent" density="compact">
                     <v-btn icon="mdi-close" @click="confirmDialog = false"></v-btn>
-                    <v-toolbar-title>Confirmar Adição</v-toolbar-title>
+                    <v-toolbar-title class="text-body-1 font-weight-bold d-none d-sm-flex">Confirmar
+                        Adição</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn variant="text" @click="confirmDialog = false">Cancelar</v-btn>
                     <v-btn color="primary" variant="flat" class="ml-2" @click="confirmAdd" :loading="adding">Adicionar à
@@ -70,23 +77,26 @@
                             <div class="pa-4">
                                 <div class="text-overline mb-2 text-primary font-weight-bold">{{
                                     getType(selectedItem).toUpperCase() }} • {{ getYear(selectedItem) }}</div>
-                                <h1 class="text-h3 font-weight-bold mb-4">{{ selectedItem.title || selectedItem.name }}
+                                <h1 class="text-h4 text-md-h3 font-weight-bold mb-4">{{ selectedItem.title ||
+                                    selectedItem.name }}
                                 </h1>
 
                                 <v-rating :model-value="selectedItem.vote_average / 2" color="amber" density="compact"
                                     half-increments readonly size="small" class="mb-4"></v-rating>
 
-                                <p class="text-h6 text-grey-lighten-1 mb-6 font-weight-light" style="line-height: 1.6;">
+                                <p class="text-body-1 text-md-h6 text-grey-lighten-1 mb-6 font-weight-light"
+                                    style="line-height: 1.6;">
                                     {{ selectedItem.overview || 'Sinopse não disponível.' }}
                                 </p>
 
-                                <div class="d-flex gap-4">
+                                <div class="d-flex flex-column flex-sm-row gap-4 align-stretch align-sm-center">
                                     <v-btn size="x-large" color="primary" rounded="pill" prepend-icon="mdi-plus"
-                                        @click="confirmAdd" :loading="adding" width="200">
+                                        @click="confirmAdd" :loading="adding"
+                                        :width="$vuetify.display.xs ? '100%' : '200'">
                                         Adicionar
                                     </v-btn>
                                     <v-btn size="x-large" variant="outlined" rounded="pill" color="grey"
-                                        @click="confirmDialog = false">
+                                        @click="confirmDialog = false" :width="$vuetify.display.xs ? '100%' : 'auto'">
                                         Cancelar
                                     </v-btn>
                                 </div>
@@ -114,6 +124,7 @@ const searchQuery = ref('');
 const results = ref([]);
 const loading = ref(false);
 const adding = ref(false);
+const addingItems = ref({}); // Map of id -> boolean
 const selectedItem = ref(null);
 
 let debounceTimeout = null;
@@ -184,6 +195,30 @@ async function confirmAdd() {
         // Reset search to allow clean slate? Or keep it?
         // User might want to click another one.
         // Let's keep it.
+    }
+}
+
+
+function isItemAdding(id) {
+    return !!addingItems.value[id];
+}
+
+async function quickAdd(item) {
+    if (addingItems.value[item.id]) return;
+
+    addingItems.value[item.id] = true;
+    try {
+        await store.addItem(item);
+        if (!store.error) {
+            emit('added', item);
+            // Optional: Show success snackbar or icon change?
+            // For now, let's keep it simple or maybe change icon to checkmark?
+            // But item stays in list.
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        addingItems.value[item.id] = false;
     }
 }
 
