@@ -1,5 +1,5 @@
 <template>
-    <v-container class="py-12" style="max-width: 800px;">
+    <v-container class="pt-16 pb-12" style="max-width: 800px;">
         <v-card class="pa-8" rounded="xl" elevation="4">
             <h1 class="text-h4 font-weight-bold mb-6">Política de Privacidade</h1>
 

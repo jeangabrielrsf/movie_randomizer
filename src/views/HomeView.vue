@@ -1,8 +1,14 @@
 <template>
   <v-container class="fill-height d-flex flex-column align-center justify-center">
 
+    <!-- Initial Loading State -->
+    <div v-if="store.isInitializing" class="d-flex flex-column align-center justify-center fill-height w-100">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      <p class="mt-4">Carregando lista...</p>
+    </div>
+
     <!-- Login State -->
-    <div v-if="!store.isAuthorized" class="text-center w-100 px-4" style="max-width: 900px;">
+    <div v-else-if="!store.isAuthorized" class="text-center w-100 px-4" style="max-width: 900px;">
 
       <div class="mb-12">
         <v-icon icon="mdi-movie-open-star" size="80" class="text-grad mb-6" />

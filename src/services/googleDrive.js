@@ -258,14 +258,29 @@ export const driveService = {
         }
     },
 
-    async readFileContent(fileId) {
+    async readFileContent(fileId, mimeType) {
         if (!this.isAuthorized) throw new Error("Not authorized");
         try {
-            const response = await gapi.client.drive.files.export({
-                fileId: fileId,
-                mimeType: 'text/plain'
-            });
-            return response.body;
+            // Check mimeType if not provided (optional, but better to pass it)
+            // For now, assume if it's passed we use it.
+
+            const isGoogleDoc = mimeType === 'application/vnd.google-apps.document';
+
+            if (isGoogleDoc) {
+                const response = await gapi.client.drive.files.export({
+                    fileId: fileId,
+                    mimeType: 'text/plain'
+                });
+                return response.body;
+            } else {
+                // Regular file (txt, etc) - download directly
+                const response = await gapi.client.drive.files.get({
+                    fileId: fileId,
+                    alt: 'media'
+                });
+                // response.body is usually the raw content for 'media'
+                return response.body;
+            }
         } catch (err) {
             console.error("Error reading file", err);
             throw err;

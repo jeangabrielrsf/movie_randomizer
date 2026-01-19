@@ -1,5 +1,5 @@
 <template>
-    <v-container class="py-12" style="max-width: 900px;">
+    <v-container class="pt-16 pb-12" style="max-width: 900px;">
         <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="$router.push('/')" class="mb-8 pl-0 text-grey">
             Voltar
         </v-btn>

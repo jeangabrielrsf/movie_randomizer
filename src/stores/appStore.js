@@ -4,6 +4,7 @@ import { tmdbService } from '../services/tmdb';
 
 export const useAppStore = defineStore('app', {
     state: () => ({
+        isInitializing: true, // New state for app startup
         isAuthorized: false,
         isLoading: false,
         folderId: null,
@@ -37,19 +38,23 @@ export const useAppStore = defineStore('app', {
                     // Restore state logic that usually happens in login
                     const storedFolder = localStorage.getItem('movie_randomizer_folder_id');
                     const storedFile = localStorage.getItem('movie_randomizer_file_id');
+
                     if (storedFolder) {
                         this.folderId = storedFolder;
-                        if (storedFile) {
-                            this.fileId = storedFile;
-                            this.currentFileName = localStorage.getItem('movie_randomizer_file_name');
-                            this.fileMimeType = localStorage.getItem('movie_randomizer_file_mime');
-                            // Load file content in background
-                            this.loadFile();
-                        }
+                    }
+
+                    if (storedFile) {
+                        this.fileId = storedFile;
+                        this.currentFileName = localStorage.getItem('movie_randomizer_file_name');
+                        this.fileMimeType = localStorage.getItem('movie_randomizer_file_mime');
+                        // Load file content in background
+                        await this.loadFile();
                     }
                 }
             } catch (err) {
                 console.error("Init Error", err);
+            } finally {
+                this.isInitializing = false;
             }
         },
 
@@ -100,15 +105,14 @@ Interstellar
 
                 if (storedFolder) {
                     this.folderId = storedFolder;
-                    // If we have a file, try to load it
-                    if (storedFile) {
-                        // We need the ID, but maybe we should verify it exists?
-                        // Let's rely on the user re-selecting if it fails, or try load.
-                        this.fileId = storedFile;
-                        this.currentFileName = localStorage.getItem('movie_randomizer_file_name');
-                        this.fileMimeType = localStorage.getItem('movie_randomizer_file_mime');
-                        await this.loadFile();
-                    }
+                }
+
+                if (storedFile) {
+                    this.fileId = storedFile;
+                    this.currentFileName = localStorage.getItem('movie_randomizer_file_name');
+                    this.fileMimeType = localStorage.getItem('movie_randomizer_file_mime');
+                    // Load file content in background, but await it so isInitializing stays true
+                    await this.loadFile();
                 }
                 this.isLoading = false;
             } catch (err) {
@@ -149,7 +153,7 @@ Interstellar
 
             try {
                 this.isLoading = true;
-                const content = await driveService.readFileContent(this.fileId);
+                const content = await driveService.readFileContent(this.fileId, this.fileMimeType);
                 this.fileContent = content;
                 this.parseContent(content);
             } catch (err) {
